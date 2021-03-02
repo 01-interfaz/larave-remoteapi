@@ -1,7 +1,9 @@
 {
-  "name": "vendor_name/Laravel-RemoteAPI",
+  "name": "01-interfaz/php-remoteapi",
   "description": "Remote consumer for laravel projects",
   "license": "Interfaz software development",
+  "minimum-stability": "stable",
+	"type": "library",
   "authors": [
     {
       "name": "franc",
