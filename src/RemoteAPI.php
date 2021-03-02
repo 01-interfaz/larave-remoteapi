@@ -11,10 +11,12 @@ namespace Interfaz;
 class RemoteAPI
 {
     public string $apiTokenKeyName = "api_token";
-    private string $endpoint = "";
-    private string $endpointKey = "";
-    private $response_cookies;
-    private $request_cookies = [];
+    private string $endpoint;
+    private string $endpointKey;
+    private array $response_cookies = [];
+    private array $request_cookies = [];
+
+    private const REGEX_COOKIE = '/^Set-Cookie:\s*([^;]+)/';
 
     public function __construct($name)
     {
@@ -22,21 +24,41 @@ class RemoteAPI
         $this->endpointKey = env('APP_REMOTE_API_' . strtoupper($name) . '_KEY');
     }
 
-    public function getURL($url)
+    public function getURL($url) : string
     {
         return $this->endpoint . $url . '?' . $this->apiTokenKeyName . '=' . $this->endpointKey;
     }
 
     public function get(string $url, ?string $query = null) : string
     {
-        $context = $this->getContext('GET');
+        return $this->execute('GET', $url, $query);
+    }
+
+    public function post(string $url, ?string $query = null) : string
+    {
+        return $this->execute('POST', $url, $query);
+    }
+
+    public function put(string $url, ?string $query = null) : string
+    {
+        return $this->execute('PUT', $url, $query);
+    }
+
+    public function delete(string $url, ?string $query = null) : string
+    {
+        return $this->execute('DELETE', $url, $query);
+    }
+
+    private function execute(string $method, string $url, ?string $query = null) : string
+    {
+        $context = $this->getContext($method);
         $url = $this->getURL($url);
         if($query !== null) $url .= "&". $query;
         $content = file_get_contents($url, false, $context);
 
         $cookies = array();
         foreach ($http_response_header as $hdr) {
-            if (preg_match('/^Set-Cookie:\s*([^;]+)/', $hdr, $matches)) {
+            if (preg_match(self::REGEX_COOKIE, $hdr, $matches)) {
                 parse_str($matches[1], $tmp);
                 $cookies += $tmp;
             }
@@ -46,12 +68,12 @@ class RemoteAPI
         return $content;
     }
 
-    public function getCookies()
+    public function getCookies(): array
     {
         return $this->response_cookies;
     }
 
-    public function setCookies($name, $value)
+    public function setCookies($name, $value) : void
     {
         $this->request_cookies[$name] = "$name=$value";
     }
@@ -65,12 +87,12 @@ class RemoteAPI
     }
 
     /**
+     * @param string $method
      * @return resource
      */
     public function getContext(string $method)
     {
         $opts = array('http' => array('method' => $method, 'header' => "Cookie: " . $this->getCookiesString()));
-        $context = stream_context_create($opts);
-        return $context;
+        return stream_context_create($opts);
     }
 }
