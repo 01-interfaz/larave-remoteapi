@@ -1,2 +1,1 @@
-# larave-remoteapi
-remote api for laravel proyects.
+# Remote API Client for PHP
