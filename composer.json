@@ -1,7 +1,6 @@
 {
   "name": "vendor_name/Laravel-RemoteAPI",
   "description": "Remote consumer for laravel projects",
-  "minimum-stability": "stable",
   "license": "Interfaz software development",
   "authors": [
     {
@@ -10,5 +9,11 @@
     }
   ],
   "require": {
+    "php" : ">=7.4"
+  }
+  "autoload": {
+    "psr-4": {
+        "Interfaz\\": "src/",
+    }
   }
 }
