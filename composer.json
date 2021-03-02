@@ -1,0 +1,14 @@
+{
+  "name": "vendor_name/Laravel-RemoteAPI",
+  "description": "Remote consumer for laravel projects",
+  "minimum-stability": "stable",
+  "license": "Interfaz software development",
+  "authors": [
+    {
+      "name": "franc",
+      "email": "francoe12012@gmail.com"
+    }
+  ],
+  "require": {
+  }
+}
